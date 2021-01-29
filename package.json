@@ -1,12 +1,13 @@
 {
-  "name": "01-node-basics",
+  "name": "goit-node-hw",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node src/start.js",
+    "dev": "nodemon src/start.js"
   },
   "repository": {
     "type": "git",
@@ -19,11 +20,14 @@
     "url": "https://github.com/b-ovsepian/01-node-basics/issues"
   },
   "homepage": "https://github.com/b-ovsepian/01-node-basics#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "joi": "^17.3.0",
+    "morgan": "^1.10.0",
+    "uuid": "^8.3.2"
+  },
   "devDependencies": {
     "nodemon": "^2.0.7"
-  },
-  "dependencies": {
-    "uuid": "^8.3.2",
-    "yargs": "^16.2.0"
   }
 }
