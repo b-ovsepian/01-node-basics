@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/b-ovsepian/01-node-basics.git"
+    "url": "git+https://github.com/b-ovsepian/goit-node-hw.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/b-ovsepian/01-node-basics/issues"
+    "url": "https://github.com/b-ovsepian/goit-node-hw/issues"
   },
-  "homepage": "https://github.com/b-ovsepian/01-node-basics#readme",
+  "homepage": "https://github.com/b-ovsepian/goit-node-hw#readme",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
