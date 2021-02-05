@@ -1,30 +1,73 @@
-import express from "express";
-import * as contactModel from "./contact.model.js";
-import { validate } from "../helpers/validate.js";
-import Joi from "joi";
+import { contactModel } from "./contacts.model.js";
 
-const controller = express.Router();
+async function listContacts(req, res, next) {
+  try {
+    const data = await contactModel.find();
+    return res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
 
-const createContactSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().required(),
-});
+async function getContactById(req, res, next) {
+  try {
+    const { id } = req.params;
+    const contact = await contactModel.findOne({ _id: id });
 
-const updateContactSchema = Joi.object({
-  name: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string(),
-}).min(1);
+    return contact
+      ? res.status(200).json(contact)
+      : res.status(404).send({ message: "Not found" });
+  } catch (error) {
+    next(error);
+  }
+}
 
-controller.get("/", contactModel.listContacts);
-controller.get("/:id", contactModel.getContactById);
-controller.post("/", validate(createContactSchema), contactModel.addContact);
-controller.delete("/:id", contactModel.removeContact);
-controller.patch(
-  "/:id",
-  validate(updateContactSchema),
-  contactModel.updateContact
-);
+async function removeContact(req, res, next) {
+  try {
+    const { id } = req.params;
+    const removedContact = await contactModel.findByIdAndDelete(id);
 
-export const contactsController = controller;
+    if (removedContact) {
+      return res.status(200).json({ message: "contact deleted" });
+    }
+    return res.status(404).send({ message: "Not found" });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function addContact(req, res, next) {
+  try {
+    const newContact = await contactModel.create(req.body);
+
+    return res.status(201).send(newContact);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateContact(req, res, next) {
+  try {
+    const { id } = req.params;
+    const updatedContact = await contactModel.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { new: true }
+    );
+
+    if (updatedContact) {
+      return res.status(200).send(updatedContact);
+    }
+    return res.status(404).send({ message: "Not found" });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  updateContact,
+};

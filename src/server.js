@@ -1,16 +1,22 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import { getPaths } from "./helpers/utils.js";
+import path from "path";
 
-import { contactsController } from "./contacts/contacts.controller.js";
+import { contactsRouter } from "./contacts/contacts.router.js";
 
 export class ContactsServer {
   constructor() {
     this.server = null;
   }
 
-  start() {
+  async start() {
     this.initServer();
+    this.initConfig();
+    await this.initDatabase();
     this.initMiddlewares();
     this.initRoutes();
     this.initErrorHandling();
@@ -21,6 +27,26 @@ export class ContactsServer {
     this.server = express();
   }
 
+  initConfig() {
+    const { __dirname } = getPaths(import.meta.url);
+    dotenv.config({ path: path.join(__dirname, "../.env") });
+  }
+
+  async initDatabase() {
+    try {
+      await mongoose.connect(process.env.MONGODB_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+      });
+
+      console.log("Database connection successful");
+    } catch (error) {
+      console.log(`MongoDB error: ${error.message}`);
+      process.exit(1);
+    }
+  }
+
   initMiddlewares() {
     this.server.use(cors());
     this.server.use(morgan("dev"));
@@ -28,7 +54,7 @@ export class ContactsServer {
   }
 
   initRoutes() {
-    this.server.use("/api/contacts", contactsController);
+    this.server.use("/api/contacts", contactsRouter);
   }
 
   initErrorHandling() {
@@ -39,8 +65,9 @@ export class ContactsServer {
   }
 
   startListening() {
-    this.server.listen(3000, () => {
-      console.log("Server started listening on port", 3000);
+    const { PORT } = process.env;
+    this.server.listen(PORT, () => {
+      console.log("Server started listening on port", PORT);
     });
   }
 }
