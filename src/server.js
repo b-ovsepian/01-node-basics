@@ -7,6 +7,8 @@ import { getPaths } from "./helpers/utils.js";
 import path from "path";
 
 import { contactsRouter } from "./contacts/contacts.router.js";
+import { userRouter } from "./users/user.router.js";
+import { authRouter } from "./auth/auth.router.js";
 
 export class ContactsServer {
   constructor() {
@@ -54,7 +56,9 @@ export class ContactsServer {
   }
 
   initRoutes() {
-    this.server.use("/api/contacts", contactsRouter);
+    this.server.use("/contacts", contactsRouter);
+    this.server.use("/auth", authRouter);
+    this.server.use("/users", userRouter);
   }
 
   initErrorHandling() {

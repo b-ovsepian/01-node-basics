@@ -2,7 +2,10 @@ import { contactModel } from "./contacts.model.js";
 
 async function listContacts(req, res, next) {
   try {
-    const data = await contactModel.find();
+    const { sub } = req.query;
+    const data = sub
+      ? await contactModel.find({ subscription: sub })
+      : await contactModel.find();
     return res.status(200).json(data);
   } catch (error) {
     next(error);
