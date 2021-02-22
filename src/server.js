@@ -53,9 +53,13 @@ export class ContactsServer {
     this.server.use(cors());
     this.server.use(morgan("dev"));
     this.server.use(express.json());
+    this.server.use(express.urlencoded({ extended: true }));
   }
 
   initRoutes() {
+    const { __dirname } = getPaths(import.meta.url);
+
+    this.server.use(`/public/images`, express.static(__dirname + "../public"));
     this.server.use("/contacts", contactsRouter);
     this.server.use("/auth", authRouter);
     this.server.use("/users", userRouter);

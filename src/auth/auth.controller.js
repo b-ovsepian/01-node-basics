@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import { userModel } from "../users/user.model.js";
+import { generateAvatar } from "../helpers/avatarGenerator.js";
 
 export async function register(req, res, next) {
   try {
@@ -17,11 +18,13 @@ export async function register(req, res, next) {
     const newUser = await userModel.create({
       email,
       password: passwordHash,
+      avatarURL: await generateAvatar(next),
     });
     return res.status(201).json({
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
+        avatarURL: newUser.avatarURL,
       },
     });
   } catch (error) {
@@ -54,6 +57,7 @@ export async function logIn(req, res, next) {
       user: {
         email: loggedInUser.email,
         subscription: loggedInUser.subscription,
+        avatarURL: loggedInUser.avatarURL,
       },
     });
   } catch (error) {
